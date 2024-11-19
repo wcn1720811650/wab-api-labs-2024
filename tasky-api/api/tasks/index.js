@@ -33,4 +33,25 @@ router.post('/', (req, res) => {
     tasksData.total_results++;
 });
 
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const taskIndex = tasksData.tasks.findIndex(task => task.id === id); 
+    if (taskIndex === -1) {
+        return res.status(404).json({ status: 404, message: 'Task not found' });
+    }
+    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id:id };
+    tasksData.tasks[taskIndex] = updatedTask;
+    res.json(updatedTask);
+});
+
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    const taskIndex = tasksData.tasks.findIndex(task => task.id === id);
+    
+    if (taskIndex === -1) return res.status(404).json({status:404,message:'Task not found'});
+    tasksData.tasks.splice(taskIndex, 1);
+    res.status(204).send();
+    tasksData.total_results--;
+});
+
 export default router;
